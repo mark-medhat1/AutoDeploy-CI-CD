@@ -1,0 +1,35 @@
+#!/bin/bash
+
+repo_dir="$(pwd)/app"
+last_hash=""
+
+cd "$repo_dir"
+
+if [[ ! -d ".git" ]]
+then
+       	echo " [+] initiallizing new commit"
+        git init
+        git remote add origin https://github.com/mark-medhat1/AutoDeploy-CI-CD.git
+        git fetch
+        git add .
+        git commit -m "initial commit"
+        git branch -M main
+        git push -u origin main
+fi
+
+
+while true; do
+	git fetch origin
+	new_hash=$(git rev-parse origin/main)
+
+	if [[ "$new_hash" != "$last_hash" ]]
+	then
+		echo "[+] New Commit: $new_hash"
+		last_hash=$new_hash
+		git pull origin main
+		bash /home/mark/scripts/Autodeploy_CI_CD/build_and_push
+		bash /home/mark/scripts/Autodeploy_CI_CD/k8s_update
+	fi
+	sleep 60
+done
+

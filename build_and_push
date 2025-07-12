@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+source /home/mark/scripts/Autodeploy_CI_CD/.env
+
+image_name="$DOCKER_USERNAME/myapp"
+tag=$(date +%s)
+
+docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORd"
+docker build -t "$image_name:$tag" -f /home/mark/scripts/Autodeploy_CI_CD/Dockerfile /home/mark/scripts/Autodeploy_CI_CD
+docker push "$image_name:$tag"
+
+echo "$image_name:$tag" > .last_image
+

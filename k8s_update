@@ -1,0 +1,7 @@
+#!/bin/bash
+
+image=$(cat .last_image)
+
+kubectl apply -f /home/mark/scripts/Autodeploy_CI_CD/k8s/deploy.yaml
+kubectl set image deployment/myapp-deployment myapp-container=$image
+kubectl rollout status deployment/myapp-deployment
